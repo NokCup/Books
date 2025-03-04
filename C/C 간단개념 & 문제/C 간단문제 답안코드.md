@@ -215,7 +215,7 @@ int main() {
 
 <br><Br>
 
-### 10 : 
+### 10 : 문자열 함수 4가지를 사용해보기
 ```cpp
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
