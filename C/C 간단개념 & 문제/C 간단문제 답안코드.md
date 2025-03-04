@@ -216,3 +216,31 @@ int main() {
 <br><Br>
 
 ### 10 : 
+
+<br><Br>
+
+### 11 : 포인터란? / (int a = 10) 를 가리키는 포인터 변수를 만들어서 a의 값과 a의 주소를 각각 2가지 방식으로 출력 / 포인터를 이용해 (int a = 10) 의 값을 20으로 변경
+```cpp
+#include <stdio.h>
+int main() {
+	int a = 10;
+	int* ptr = &a;
+
+	// a의 값
+	printf("%d ", a);
+	printf("%d\n", *ptr);
+	
+	// a의 주소값
+	printf("%d ", &a);
+	printf("%d\n", ptr);
+	
+
+	// a 값 변경
+	*ptr = 20;
+	printf("%d", a);
+}
+```
+
+<Br><br>
+
+### 12 : 
