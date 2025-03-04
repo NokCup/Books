@@ -216,6 +216,38 @@ int main() {
 <br><Br>
 
 ### 10 : 
+```cpp
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+int main() {
+	char str[] = "Hello ";
+
+
+	//strlen()
+	int len = strlen(str);
+	printf("%d\n", len);
+
+	//strcpy(복사받을 것, 복사할 것)
+	char str2[100];
+	
+	strcpy(str2, str);
+	printf("%s\n", str2);
+	
+
+	//strcat(붙여질 것, "문자열")
+	strcat(str2, "World!");
+	printf("%s\n", str2);
+
+
+
+	//strcmp(a, b) :a가 사전순서로 b보다 먼저면 -1, 반대는 1, 같으면 0 
+	char a[] = "camp";
+	char b[] = "lamp";
+	
+	printf("%d", strcmp(a, b));
+}
+```
 
 <br><Br>
 
