@@ -1,0 +1,363 @@
+# 리스트
+
+항목들이 차례대로 나열되어 있는 자료구조 <br><Br>
+
+## 리스트의 구조
+
+스택 : LIFO 방식으로 한쪽 끝에서만 삽입과 삭제 <br>
+큐 : FIFO 방식으로 한쪽 끝에서 삽입, 다른 쪽 끝에서 삭제<br>
+리스트 : 항목의 삽입 삭제가 자유로움  
+
+
+## 리스트 ADT
+- insert(pos, e): pos 위치에 새로운 요소 e를 삽입함
+- delete(pos): pos 위치에 있는 요소를 꺼내고(삭제) 반환함
+- isEmpty(): 리스트가 비어 있는지를검사함
+- isFull(): 리스트가 가득 차있는지를검사함
+- getEntry(pos): pos 위치에 있는 요소를 반환함
+
+## 리스트의 구현 방법
+1. 배열구조 
+    - 자료가 연속적인 공간에 위치
+    - 접근 시간복잡도 O(1)
+    - 한정된 공간(용량 변경이 어려움)
+    - 삽입, 삭제가 비효율적임(시간 복잡도 O(n))
+
+
+<Br><br>
+
+2. 연결된 구조 (Linked list)
+   - 자료가 메모리의 연속된 공간에 있다는 보장이 없음(자유분방)
+   - 각 요소는 다음 요소의 주소를 가지고 있음
+   - 요소 접근 시간복잡도 O(n)
+   - 삽입 삭제가 효율적(구현이 어려움)
+  
+
+
+## 각 언어의 자료구조 리스트 
+- 파이썬 list 클래스(배열구조)
+- C++ STL vector 클래스 (배열구조)
+- C++ STL list 클래스 (Linked)
+- Java ArrayList 클래스 (배열구조)
+- Java LinkedList 클래스 (Linked)
+
+
+# Python의 리스트
+C언어의 배열은 선언 시 크기가 고정되지만 Python은 크기를 동적으로 변경이 가능하다. 어떻게 가능한걸까?
+
+1. 필요한 양보다 넉넉한 크기의 메모리 사용 <br>
+ex) 리스트 크기는 3이지만, 총 용량을 10으로 할당 후 세 항목만 사용
+
+<br><br>
+
+2. 남은 공간이 없는 경우
+    - 기존 메모리를 버리고 더 큰 새 메모리 할당 -> 이전 메모리에 저장된 항목을 새 메모리로 복사 -> 이전 메모리 해제
+
+
+
+## Python 리스트 연산 시간복잡도
+
+1. append()
+   - 여분의 용량이 있는 경우 : O(1)
+
+   - 용량을 늘려야 하는 경우 : <br>
+새 메모리 할당 후 기존 메모리 항목 복사해야 하므로 O(n)
+
+평균 시간복잡도는 O(1)이다. 용량을 늘려야 하는 경우는 거의 발생하지 않기 때문
+
+
+<br><br>
+
+2. insert()
+: 임의의 위치에 항목 삽입
+    - 맨 뒤에 삽입시 O(1)이지만, 
+    - 전단에 삽입시 뒤의 데이터를 전부 이동시키므로 O(n)이다.
+
+: 시간 복잡도 O(n)
+
+<br><Br>
+
+3. pop() : 임의의 위치의 항목 삭제
+    - 첫번째 항목 삭제 시 뒤의 자료들을 전부 한칸 씩 앞으로 이동시켜야함 
+
+: 시간 복잡도 O(n)
+
+
+<br><br>
+
+```
+정리
+
+append(e)       # 평균 O(1)  -> 예외: 용량을 늘려야 할 때
+
+insert(pos, e)  # 전단: O(n)    , 후단 : O(1)
+
+pop()           # 전단: O(n)    , 후단 : O(1) 
+```
+
+
+
+
+## 배열 리스트 자료구조 구현
+
+```py
+# 배열 리스트 자료구조
+class ArrayList:
+    def __init__(self, capacity = 100):
+        self.capacity = capacity        # 저장 가능한 자료 공간
+        self.array = [None]*capacity
+        self.size = 0                   # 저장된 자료 개수
+
+
+    #공백상태 검사
+    def isEmpty(self):
+        return self.size == 0
+    
+
+    #포화상태 검사
+    def isFull(self):
+        return self.size == self.capacity
+    
+
+    #pos 값 반환
+    def getEntry(self, pos):
+        if 0 <= pos < self.size:
+            return self.array[pos]
+        else:
+            print("유효범위가 아님")
+            return None
+
+    '''
+[삽입 과정]
+1. Not 포화상태 & 유효한 위치라면
+2. 배열의 뒤부터 한칸씩 뒤로 당기면서 배열 앞으로 이동 
+3. pos에 데이터 삽입
+4. size 증가
+'''
+
+
+    #삽입
+    def insert(self, pos, e):
+        if not self.isFull() and 0 <= pos <= self.size:
+            for i in range(self.size, pos, -1):
+                self.array[i] = self.array[i - 1]
+
+            self.array[pos] = e
+            self.size += 1
+        else:
+            print("overflow 혹은 유효범위가 아님")
+            exit()
+
+
+    '''
+[삭제 과정]
+1. Not 공백상태 & 유효한 위치라면
+2. 삭제할 위치(pos)의 복사본 만들기 
+3. 배열의 앞(pos 뒤)부터 차례대로 앞으로 당겨오기 
+4. size 감소
+'''
+
+    #삭제
+    def delete(self, pos):
+        if not self.isEmpty() and 0 <= pos < self.size:
+            e = self.array[pos] 
+            for i in range(pos, self.size - 1):
+                self.array[i] = self.array[i + 1]
+            
+            self.size -= 1
+            return e
+        else:
+            print("underflow 혹은 유효범위가 아님")
+            exit()
+
+
+    def __str__(self):
+        return str(self.array[0:self.size])
+    
+
+
+
+# main()
+if __name__ == "__main__":
+    L = ArrayList(50)
+    
+    print("최초   ", L)
+    L.insert(0, 10)
+    L.insert(0, 20)
+    L.insert(1, 30)
+    L.insert(L.size, 40)
+    L.insert(2, 50)
+    print("삽입x5 ", L)
+    L.delete(2)
+    print("삭제(2)", L)
+    L.delete(L.size-1)
+    print("삭제(E)", L)
+    L.delete(0)
+    print("삭제(0)", L)
+
+```
+
+  ** 만일 클래스로 구현하지 않은 경우에는 각 함수에 `global size`를 넣어야 함.
+
+
+<br><br>
+
+## 집합
+집합은 원소의 중복을 허용하지 않으며, 순서가 없다. <br>
+따라서 선형 자료구조가 될 수 없다.
+
+<br>
+
+## 집합의 ADT
+  - isEmpty()
+  - isFull()
+  - contains(e)
+  - insert(e)
+  - delete(e)
+  
+  - union(setB)
+  - intersect(setB)
+  - differnce(setB)
+
+
+<br>
+
+## 집합의 구현
+파이썬에서는 set과 frozenset 두 집합 자료형을 제공한다. <br> frozenset은 내용 변경이 불가능한 집합 자료형이다.
+<br><br>
+
+```py
+s1 = {1, 2, 3}
+s2 = {2, 3 ,4 , 5}
+
+s3 = s1.union(s2)   #합집합
+s4 = s1.intersection(s2) #교집합
+s5 = s1 - s2 #차집합
+
+a = set() #공집합
+```
+```
+[실행결과]
+{1, 2, 3}
+{2, 3, 4, 5}
+{1, 2, 3, 4, 5}
+{2, 3}
+{1}
+set()
+```
+
+<br><br>
+
+## 배열을 이용한 집합 구현
+
+```py
+class ArraySet:
+    def __init__(self, capacity = 100):
+        self.capacity = capacity
+        self.array = [None]*capacity
+        self.size = 0
+    
+    # 공백상태 검사
+    def isEmpty(self):
+        return self.size == 0
+    
+    # 포화상태 검사
+    def isFull(self):
+        return self.size == self.capacity
+    
+    # 집합이 e를 포함하는지 확인    
+    def contains(self, e): 
+        for i in range(self.size):
+            if self.array[i] == e:
+                return True
+        return False 
+
+    
+    '''
+[삽입과정]
+1. 삽입할 원소가 집합에 없고, 배열이 포화상태가 아니라면
+(집합은 순서가 상관없으므로 pos는 쓰지 않음)
+
+2. 배열 맨 뒤에 원소 삽입
+
+3. size 증가
+'''
+
+    # 집합에 원소 삽입
+    def insert(self, e):
+        if not self.contains(e) and not self.isFull():
+            self.array[self.size] = e
+            self.size += 1
+        else: 
+            exit()
+
+    '''
+[원소 삭제 과정]
+1. 집합에 삭제할 원소가 있다면
+2. 삭제할 원소와 배열 맨 뒤에 있는 원소를 바꿈
+(코드상 맨뒤의 원소를 삭제할 원소위치에 삽입 후 size 감소)
+3. 배열 맨 뒤 원소 삭제
+4. size 감소
+'''
+
+    # 집합 원소 삭제
+    def delete(self, e):
+        for i in range(self.size):
+            if self.array[i] == e:   #삭제할 원소를 찾음
+                self.array[i] = self.array[self.size-1]
+                self.size -= 1
+                return 
+        else: 
+            exit()
+
+
+    '''
+[합집합 구현과정]
+1. 공집합인 집합 C에 집합 A의 원소들 모두 삽입
+2. B원소 중 C(=A)에 포함되지 않는 원소를 C에 삽입
+3. 교집합 결과 리턴
+'''
+
+    def union(self, setB):
+        setC = ArraySet()
+        for i in range(self.size):
+            setC.insert(self.array[i])
+        
+        for i in range(setB.size()):
+            if not setC.contains(setB.array[i]):
+                setC.insert(setB.array[i])
+        
+        return setC
+
+    def __str__(self):
+        return str(self.array[0:self.size()])
+    
+    
+    '''
+[교집합 구현과정]
+1. self원소 중 setB에도 있는 원소만 setC에 추가
+2. 교집합 결과 리턴
+'''
+    def intersect(self, setB):
+        setC = ArraySet()
+
+        for i in range(self.size):
+            if setB.contains(self.array[i]):
+                setC.insert(self.array[i])
+            return setC
+        
+    '''
+[차집합 구현과정]
+1. self 원소 중 setB에 없는 원소만 setC에 추가
+2. 차집합 결과 리턴
+'''
+
+    def difference(self, setB):
+        setC = ArraySet()
+
+        for i in range(self.size):
+            if not setB.contains(self.array[i]):
+                setC.insert(self.array[i])
+            return setC
+
+```
